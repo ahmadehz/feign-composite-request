@@ -1,6 +1,6 @@
-package com.github.feignclientutil.feign;
+package io.openfeign.extensions.compositerequest.feign;
 
-import com.github.feignclientutil.annotation.Body;
+import io.openfeign.extensions.compositerequest.annotation.Body;
 import feign.RequestTemplate;
 import feign.codec.EncodeException;
 import feign.codec.Encoder;
@@ -8,11 +8,11 @@ import feign.codec.Encoder;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 
-public class RequestModelBodyEncoder implements Encoder {
+public class CompositeRequestBodyEncoder implements Encoder {
 
     private final Encoder delegate;
 
-    public RequestModelBodyEncoder(Encoder delegate) {
+    public CompositeRequestBodyEncoder(Encoder delegate) {
         this.delegate = delegate;
     }
 

@@ -1,4 +1,4 @@
-package com.github.feignclientutil.annotation;
+package io.openfeign.extensions.compositerequest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

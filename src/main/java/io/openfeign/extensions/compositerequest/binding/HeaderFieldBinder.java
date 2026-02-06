@@ -1,6 +1,6 @@
-package com.github.feignclientutil.binding;
+package io.openfeign.extensions.compositerequest.binding;
 
-import com.github.feignclientutil.annotation.Header;
+import io.openfeign.extensions.compositerequest.annotation.Header;
 import feign.MethodMetadata;
 import org.springframework.cloud.openfeign.AnnotatedParameterProcessor;
 
@@ -8,7 +8,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-public class HeaderFieldBinder implements RequestModelFieldBinder {
+public class HeaderFieldBinder implements CompositeRequestFieldBinder {
 
     private static final Class<Header> ANNOTATION = Header.class;
 

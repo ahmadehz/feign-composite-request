@@ -1,6 +1,6 @@
-package com.github.feignclientutil.binding;
+package io.openfeign.extensions.compositerequest.binding;
 
-import com.github.feignclientutil.annotation.RequestModel;
+import io.openfeign.extensions.compositerequest.annotation.CompositeRequest;
 import org.springframework.cloud.openfeign.AnnotatedParameterProcessor;
 
 import java.lang.annotation.Annotation;
@@ -13,22 +13,22 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class RequestModelParameterProcessor implements AnnotatedParameterProcessor {
+public class CompositeRequestParameterProcessor implements AnnotatedParameterProcessor {
 
-    private final Map<Class<? extends Annotation>, RequestModelFieldBinder> binders;
+    private final Map<Class<? extends Annotation>, CompositeRequestFieldBinder> binders;
 
-    public RequestModelParameterProcessor(List<RequestModelFieldBinder> requestModelFieldBinders) {
-        List<RequestModelFieldBinder> binderList = getDefaultBinders();
-        binderList.addAll(requestModelFieldBinders);
+    public CompositeRequestParameterProcessor(List<CompositeRequestFieldBinder> compositeRequestFieldBinders) {
+        List<CompositeRequestFieldBinder> binderList = getDefaultBinders();
+        binderList.addAll(compositeRequestFieldBinders);
         this.binders = new HashMap<>();
-        for (RequestModelFieldBinder binder : binderList) {
+        for (CompositeRequestFieldBinder binder : binderList) {
             binders.put(binder.getAnnotationType(), binder);
         }
     }
 
     @Override
     public Class<? extends Annotation> getAnnotationType() {
-        return RequestModel.class;
+        return CompositeRequest.class;
     }
 
     @Override
@@ -40,7 +40,7 @@ public class RequestModelParameterProcessor implements AnnotatedParameterProcess
 
         for (Field field : paramClass.getDeclaredFields()) {
             for (Annotation fieldAnnotation : field.getAnnotations()) {
-                RequestModelFieldBinder binder = binders.get(fieldAnnotation.annotationType());
+                CompositeRequestFieldBinder binder = binders.get(fieldAnnotation.annotationType());
                 if (binder != null)
                     binder.bind(context, fieldAnnotation, field);
             }
@@ -48,8 +48,8 @@ public class RequestModelParameterProcessor implements AnnotatedParameterProcess
         return true;
     }
 
-    private List<RequestModelFieldBinder> getDefaultBinders() {
-        List<RequestModelFieldBinder> defaultBinders = new ArrayList<>();
+    private List<CompositeRequestFieldBinder> getDefaultBinders() {
+        List<CompositeRequestFieldBinder> defaultBinders = new ArrayList<>();
         defaultBinders.add(new BodyFieldBinder());
         defaultBinders.add(new HeaderFieldBinder());
         defaultBinders.add(new ParamFieldBinder());

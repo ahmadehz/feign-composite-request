@@ -1,6 +1,6 @@
-package com.github.feignclientutil.binding;
+package io.openfeign.extensions.compositerequest.binding;
 
-import com.github.feignclientutil.annotation.Body;
+import io.openfeign.extensions.compositerequest.annotation.Body;
 import org.springframework.cloud.openfeign.AnnotatedParameterProcessor;
 
 import java.lang.annotation.Annotation;
@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 
 import static feign.Util.checkState;
 
-public class BodyFieldBinder implements RequestModelFieldBinder {
+public class BodyFieldBinder implements CompositeRequestFieldBinder {
 
     @Override
     public Class<? extends Annotation> getAnnotationType() {

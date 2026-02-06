@@ -8,11 +8,10 @@
         <version>3.5.7</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.github</groupId>
-    <artifactId>feign-client-util</artifactId>
+    <groupId>io.feign.extensions</groupId>
+    <artifactId>composite-request</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>feign-client-util</name>
-    <description>feign-client-util</description>
+    <name>feign-composite-request</name>
     <url/>
     <licenses>
         <license/>

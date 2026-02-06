@@ -1,12 +1,11 @@
-package com.github.feignclientutil.annotation;
-
+package io.openfeign.extensions.compositerequest.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.FIELD, ElementType.METHOD})
+@Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Body {
+public @interface CompositeRequest {
 }

@@ -1,6 +1,6 @@
-package com.github.feignclientutil.binding;
+package io.openfeign.extensions.compositerequest.binding;
 
-import com.github.feignclientutil.annotation.Param;
+import io.openfeign.extensions.compositerequest.annotation.Param;
 import feign.MethodMetadata;
 import feign.QueryMapEncoder;
 import org.springframework.cloud.openfeign.AnnotatedParameterProcessor.AnnotatedParameterContext;
@@ -12,7 +12,7 @@ import java.util.Map;
 
 import static feign.Util.checkState;
 
-public class ParamFieldBinder implements RequestModelFieldBinder {
+public class ParamFieldBinder implements CompositeRequestFieldBinder {
 
     private static final Class<Param> ANNOTATION = Param.class;
 
