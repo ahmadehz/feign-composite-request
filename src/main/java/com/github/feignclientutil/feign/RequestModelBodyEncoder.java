@@ -1,4 +1,4 @@
-package com.github.feignclientutil.requestmodel;
+package com.github.feignclientutil.feign;
 
 import com.github.feignclientutil.annotation.Body;
 import feign.RequestTemplate;
