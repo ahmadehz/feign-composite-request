@@ -1,13 +1,15 @@
 package io.openfeign.extensions.compositerequest.config;
 
-import io.openfeign.extensions.compositerequest.binding.CompositeRequestFieldBinder;
-import io.openfeign.extensions.compositerequest.binding.CompositeRequestParameterProcessor;
-import feign.codec.Encoder;
-import io.openfeign.extensions.compositerequest.feign.CompositeRequestBodyEncoder;
-import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
-import org.springframework.cloud.openfeign.support.SpringEncoder;
+import feign.Contract;
+import io.openfeign.extensions.compositerequest.feign.CompositeRequestContract;
+import io.openfeign.extensions.compositerequest.feign.CompositeRequestInvocationHandlerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.openfeign.AnnotatedParameterProcessor;
+import org.springframework.cloud.openfeign.FeignBuilderCustomizer;
+import org.springframework.cloud.openfeign.FeignClientProperties;
+import org.springframework.cloud.openfeign.support.SpringMvcContract;
 import org.springframework.context.annotation.Bean;
+import org.springframework.core.convert.ConversionService;
 
 import java.util.List;
 
@@ -15,12 +17,15 @@ import java.util.List;
 public class CompositeRequestConfiguration {
 
     @Bean
-    Encoder feignEncoder(ObjectProvider<HttpMessageConverters> converters) {
-        return new CompositeRequestBodyEncoder(new SpringEncoder(converters));
+    Contract compositeRequestContract(List<AnnotatedParameterProcessor> annotatedParameterProcessors,
+                                      @Qualifier("feignConversionService") ConversionService conversionService,
+                                      FeignClientProperties properties) {
+        SpringMvcContract springMvcContract = new SpringMvcContract(annotatedParameterProcessors, conversionService, properties);
+        return new CompositeRequestContract(springMvcContract);
     }
 
     @Bean
-    CompositeRequestParameterProcessor requestModelProcessor(List<CompositeRequestFieldBinder> compositeRequestFieldBinders) {
-        return new CompositeRequestParameterProcessor(compositeRequestFieldBinders);
+    FeignBuilderCustomizer customizeBuilderInvocationHandlerFactory() {
+        return builder -> builder.invocationHandlerFactory(new CompositeRequestInvocationHandlerFactory());
     }
 }
