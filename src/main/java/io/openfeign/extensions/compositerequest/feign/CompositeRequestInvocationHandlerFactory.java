@@ -2,7 +2,6 @@ package io.openfeign.extensions.compositerequest.feign;
 
 import feign.InvocationHandlerFactory;
 import feign.Target;
-import io.openfeign.extensions.compositerequest.annotation.CompositeRequest;
 import io.openfeign.extensions.compositerequest.internal.CompositeRequestParts;
 import io.openfeign.extensions.compositerequest.internal.CompositeArgumentLayout;
 
@@ -10,6 +9,8 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
+
+import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.*;
 
 public final class CompositeRequestInvocationHandlerFactory
         implements InvocationHandlerFactory {
@@ -44,7 +45,7 @@ final class CompositeInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        int compositeRequestParameterIndex = compositeRequestParameterIndex(method);
+        int compositeRequestParameterIndex = getParameterIndex(method);
         if (compositeRequestParameterIndex < 0)
             return delegate.invoke(proxy, method, args);
 
@@ -59,14 +60,6 @@ final class CompositeInvocationHandler implements InvocationHandler {
             rewrittenArgs[argumentLayout.bodyIndex()] = requestParts.getBody();
 
         return dispatch.get(method).invoke(rewrittenArgs);
-    }
-
-    private int compositeRequestParameterIndex(Method method) {
-        for (int index = 0; method.getParameters().length > index; index++) {
-            if (method.getParameters()[index].isAnnotationPresent(CompositeRequest.class))
-                return index;
-        }
-        return -1;
     }
 }
 

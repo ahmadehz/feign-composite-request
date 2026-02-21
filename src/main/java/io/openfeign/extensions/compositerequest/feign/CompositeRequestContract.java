@@ -2,13 +2,12 @@ package io.openfeign.extensions.compositerequest.feign;
 
 import feign.Contract;
 import feign.MethodMetadata;
-import io.openfeign.extensions.compositerequest.annotation.Body;
-import io.openfeign.extensions.compositerequest.annotation.CompositeRequest;
 import io.openfeign.extensions.compositerequest.internal.CompositeArgumentLayout;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Parameter;
 import java.util.List;
+
+import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.getParameterIndex;
+import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.hasBody;
 
 public final class CompositeRequestContract implements Contract {
 
@@ -22,23 +21,13 @@ public final class CompositeRequestContract implements Contract {
     public List<MethodMetadata> parseAndValidateMetadata(Class<?> targetType) {
         List<MethodMetadata> methodMetadataList = delegate.parseAndValidateMetadata(targetType);
         for (MethodMetadata metadata : methodMetadataList) {
-            int index = compositeRequestIndex(metadata);
+            int index = getParameterIndex(metadata.method());
             if (index >= 0) {
                 checkState(metadata);
                 setCompositeRequestToMetadata(metadata, index);
             }
         }
         return methodMetadataList;
-    }
-
-    private int compositeRequestIndex(MethodMetadata metadata) {
-        int totalParameters = metadata.method().getParameterCount();
-        for (int index = 0; index < totalParameters; index++) {
-            Parameter parameter = metadata.method().getParameters()[index];
-            if (parameter.isAnnotationPresent(CompositeRequest.class))
-                return index;
-        }
-        return -1;
     }
 
     private void checkState(MethodMetadata metadata) {
@@ -50,20 +39,15 @@ public final class CompositeRequestContract implements Contract {
 
     private void setCompositeRequestToMetadata(MethodMetadata metadata, int compositeRequestIndex) {
         CompositeArgumentLayout compositeArgumentLayout = CompositeArgumentLayout.from(metadata.method().getParameterCount());
+        Class<?> type = metadata.method().getParameters()[compositeRequestIndex].getType();
+
         metadata.ignoreParamater(compositeRequestIndex);
 
         metadata.headerMapIndex(compositeArgumentLayout.headerIndex());
         metadata.queryMapIndex(compositeArgumentLayout.paramIndex());
-        if (hasBody(metadata, compositeRequestIndex))
+        if (hasBody(type))
             metadata.bodyIndex(compositeArgumentLayout.bodyIndex());
     }
 
-    private boolean hasBody(MethodMetadata metadata, int compositeRequestIndex) {
-        Parameter compositerParameter = metadata.method().getParameters()[compositeRequestIndex];
-        for (Field field : compositerParameter.getType().getDeclaredFields()) {
-            if (field.isAnnotationPresent(Body.class))
-                return true;
-        }
-        return false;
-    }
+
 }
