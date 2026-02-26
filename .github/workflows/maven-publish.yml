@@ -5,29 +5,30 @@ on:
     inputs:
       version:
         required: true
+        description: 'Release version'
 
 jobs:
   release:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up JDK
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-          server-id: github
-          settings-path: ${{ github.workspace }}
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+        server-id: github
+        settings-path: ${{ github.workspace }}
 
-      - name: Set version
-        run: mvn versions:set -DnewVersion=${{ github.event.inputs.version }}
+    - name: Set version
+      run: mvn versions:set -DnewVersion=${{ github.event.inputs.version }}
 
-      - name: Build
-        run: mvn clean verify
+    - name: Build
+      run: mvn clean verify
 
-      - name: Publish to GitHub Packages Apache Maven
+    - name: Publish to GitHub Packages Apache Maven
       run: mvn deploy -s $GITHUB_WORKSPACE/settings.xml
       env:
         GITHUB_TOKEN: ${{ github.token }}
