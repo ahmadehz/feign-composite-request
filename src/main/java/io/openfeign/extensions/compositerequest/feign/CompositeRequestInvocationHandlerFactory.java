@@ -11,8 +11,7 @@ import java.util.*;
 
 import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.*;
 
-public final class CompositeRequestInvocationHandlerFactory
-        implements InvocationHandlerFactory {
+public final class CompositeRequestInvocationHandlerFactory implements InvocationHandlerFactory {
 
     private final InvocationHandlerFactory delegate;
 
@@ -53,10 +52,10 @@ final class CompositeInvocationHandler implements InvocationHandler {
         CompositeArgumentLayout argumentLayout = CompositeArgumentLayout.from(method.getParameterCount(), hasBody(compositeObject.getClass()));
 
         Object[] rewrittenArgs = Arrays.copyOf(args, argumentLayout.totalParameterCount());
-        rewrittenArgs[argumentLayout.headerIndex()] = requestParts.getHeaders();
-        rewrittenArgs[argumentLayout.paramIndex()] = requestParts.getParams();
+        rewrittenArgs[argumentLayout.headerIndex()] = requestParts.headers();
+        rewrittenArgs[argumentLayout.paramIndex()] = requestParts.params();
         if (requestParts.hasBody())
-            rewrittenArgs[argumentLayout.bodyIndex()] = requestParts.getBody();
+            rewrittenArgs[argumentLayout.bodyIndex()] = requestParts.body();
 
         return dispatch.get(method).invoke(rewrittenArgs);
     }
