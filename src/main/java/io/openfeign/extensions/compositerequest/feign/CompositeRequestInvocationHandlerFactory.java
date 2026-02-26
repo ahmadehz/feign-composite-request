@@ -2,8 +2,7 @@ package io.openfeign.extensions.compositerequest.feign;
 
 import feign.InvocationHandlerFactory;
 import feign.Target;
-import io.openfeign.extensions.compositerequest.internal.CompositeRequestParts;
-import io.openfeign.extensions.compositerequest.internal.CompositeArgumentLayout;
+import io.openfeign.extensions.compositerequest.internal.*;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -22,7 +21,7 @@ public final class CompositeRequestInvocationHandlerFactory
     }
 
     public CompositeRequestInvocationHandlerFactory(InvocationHandlerFactory delegate) {
-        this.delegate = delegate;
+        this.delegate = Objects.requireNonNull(delegate);
     }
 
     @Override
@@ -51,7 +50,7 @@ final class CompositeInvocationHandler implements InvocationHandler {
 
         Object compositeObject = args[compositeRequestParameterIndex];
         CompositeRequestParts requestParts = CompositeRequestParts.from(compositeObject);
-        CompositeArgumentLayout argumentLayout = CompositeArgumentLayout.from(method.getParameterCount(), requestParts.hasBody());
+        CompositeArgumentLayout argumentLayout = CompositeArgumentLayout.from(method.getParameterCount(), hasBody(compositeObject.getClass()));
 
         Object[] rewrittenArgs = Arrays.copyOf(args, argumentLayout.totalParameterCount());
         rewrittenArgs[argumentLayout.headerIndex()] = requestParts.getHeaders();

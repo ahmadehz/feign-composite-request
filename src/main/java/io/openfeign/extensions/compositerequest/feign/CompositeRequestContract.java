@@ -5,16 +5,16 @@ import feign.MethodMetadata;
 import io.openfeign.extensions.compositerequest.internal.CompositeArgumentLayout;
 
 import java.util.List;
+import java.util.Objects;
 
-import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.getParameterIndex;
-import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.hasBody;
+import static io.openfeign.extensions.compositerequest.util.CompositeRequestUtil.*;
 
 public final class CompositeRequestContract implements Contract {
 
     private final Contract delegate;
 
     public CompositeRequestContract(Contract delegate) {
-        this.delegate = delegate;
+        this.delegate = Objects.requireNonNull(delegate);
     }
 
     @Override
@@ -45,9 +45,9 @@ public final class CompositeRequestContract implements Contract {
 
         metadata.headerMapIndex(compositeArgumentLayout.headerIndex());
         metadata.queryMapIndex(compositeArgumentLayout.paramIndex());
-        if (hasBody(type))
+        if (hasBody(type)) {
             metadata.bodyIndex(compositeArgumentLayout.bodyIndex());
+            metadata.setBodyRequired(false);
+        }
     }
-
-
 }
