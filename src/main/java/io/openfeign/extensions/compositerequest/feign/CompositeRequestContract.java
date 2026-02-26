@@ -47,7 +47,10 @@ public final class CompositeRequestContract implements Contract {
         metadata.queryMapIndex(compositeArgumentLayout.paramIndex());
         if (hasBody(type)) {
             metadata.bodyIndex(compositeArgumentLayout.bodyIndex());
-            metadata.setBodyRequired(false);
+            try {
+                metadata.setBodyRequired(false);
+            } catch (NoSuchMethodError ignored) {
+            }
         }
     }
 }
