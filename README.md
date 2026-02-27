@@ -57,10 +57,37 @@ ResponseEntity<?> call(@CompositeRequest RequestDto request);
 
 The library extracts request attributes based on field annotations and sends them appropriately.
 
+## Requirements
 
+* Java 17+
+* Spring Boot 3 or 4
+* Spring Cloud OpenFeign
+
+You can use this [configuration for spring boot](https://start.spring.io/#!type=maven-project&language=java&dependencies=cloud-feign)
 ## How to use
 
-### 1. Add Dependency to `pom.xml`
+
+### 1. Add GitHub Repository to `pom.xml`
+```xml
+<repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/ahmadehz/*</url>
+    </repository>
+</repositories>
+```
+
+For gradle, add GitHub repository to `build.gradle`
+```groovy
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/ahmadehz/*")
+    }
+}
+```
+
+
+### 2. Add Dependency to `pom.xml`
 ```xml
 <dependency>
    <groupId>io.openfeign.extensions</groupId>
@@ -69,14 +96,11 @@ The library extracts request attributes based on field annotations and sends the
 </dependency>
 ```
 
-### 2.2. Add GitHub Repository `pom.xml`
-```xml
-<repositories>
-    <repository>
-        <id>github</id>
-        <url>https://maven.pkg.github.com/ahmadehz/*</url>
-    </repository>
-</repositories>
+for Gradle, add dependency to `build.gradle`:
+```groovy
+dependencies {
+    implementation("io.openfeign.extensions:composite-request:0.1.0")
+}
 ```
 
 
@@ -133,6 +157,8 @@ public interface ExampleClient {
 }
 ```
 **`CompositeRequestConfiguration` must be added to the Feign client configuration.**
+
+
 ### Supported Field Types
 
 #### Headers
@@ -164,8 +190,7 @@ Produces:
 traceId: 111
 X-Forwarded-For: "192.168.1.1"
 ```
-<br>
-
+---
 #### Parameters
 
 ```java
@@ -194,8 +219,7 @@ Produces:
 ```
 ?size=1&user=123
 ```
-<br>
-
+---
 #### Body
 ```java
 @Body
