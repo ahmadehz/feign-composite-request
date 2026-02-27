@@ -33,7 +33,14 @@ This library is intended for internal services, prototypes, and non-critical int
 
 * body → `@RequestBody`
 
-This leads to verbose and hard-to-maintain client methods when a request logically belongs together.
+This leads to verbose and hard-to-maintain client methods when a request logically belongs together:
+````java
+ResponseEntity<?> call(@RequestParam("userId") Long userId,
+                       @RequestParam("size") Integer size,
+                       @RequestHeader("X-Trace-Id") String traceId,
+                       @RequestBody Payload payload);
+````
+
 
 Feign does not provide a way to pass one object and automatically split it into headers, parameters, and body.
 
@@ -44,8 +51,8 @@ Feign does not provide a way to pass one object and automatically split it into 
 
 Feign client methods remain clean and minimal:
 
-````
-String call(@CompositeRequest RequestDto request);
+````java
+ResponseEntity<?> call(@CompositeRequest RequestDto request);
 ````
 
 The library extracts request attributes based on field annotations and sends them appropriately.
@@ -55,21 +62,21 @@ The library extracts request attributes based on field annotations and sends the
 
 ### 1. Add Dependency to `pom.xml`
 ```xml
-   <dependency>
+<dependency>
    <groupId>io.openfeign.extensions</groupId>
    <artifactId>composite-request</artifactId>
    <version>0.1.0</version>
-   </dependency>
+</dependency>
 ```
 
-### 2. Add custom repository to `pom.xml`
+### 2.2. Add GitHub Repository `pom.xml`
 ```xml
 <repositories>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/ahmadehz/*</url>
-        </repository>
-    </repositories>
+    <repository>
+        <id>github</id>
+        <url>https://maven.pkg.github.com/ahmadehz/*</url>
+    </repository>
+</repositories>
 ```
 
 
@@ -77,9 +84,9 @@ The library extracts request attributes based on field annotations and sends the
 
 Create a regular POJO and annotate its fields to indicate how they should be sent in the HTTP request.
 
-* Fields annotated with @Header are sent as HTTP headers
-* Fields annotated with @Param are sent as query parameters
-* Fields annotated with @Body are sent as the request body
+* Fields annotated with `@Param` are sent as query parameters
+* Fields annotated with `@Header` are sent as HTTP headers
+* Field annotated with `@Body` is sent as HTTP body
 
 **Example:**
 ```java
@@ -92,6 +99,9 @@ public class RequestDto {
 
     @Param("userId")
     private Long userId;
+    
+    @Param
+    private Integer size;
 
     @Body
     private Payload payload;
@@ -119,7 +129,7 @@ import io.openfeign.extensions.compositerequest.CompositeRequestConfiguration;
 public interface ExampleClient {
 
     @PostMapping("/api/v1/example")
-    String call(@CompositeRequest RequestDto request);
+    ResponseEntity<?> call(@CompositeRequest RequestDto request);
 }
 ```
 **`CompositeRequestConfiguration` must be added to the Feign client configuration.**
@@ -138,7 +148,7 @@ private Map<String, String> headers;
 private MultiValueMap<String, String> multiHeaders; // Multi-value headers
 
 ```
-If no value is specified in @Header, the field name is used as the HTTP header name.
+If no value is specified in `@Header`, the field name is used as the HTTP header name.
 
 Example:
 ```java
@@ -169,7 +179,7 @@ private Map<String, Object> params;
 private MultiValueMap<String, Object> multiParams; // Multi-value parameters
 ```
 
-If no value is specified in @Param, the field name is used as the query parameter name.  
+If no value is specified in `@Param`, the field name is used as the query parameter name.  
 
 Example:
 
