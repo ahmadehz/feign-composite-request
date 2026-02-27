@@ -20,8 +20,6 @@ This keeps client interfaces clean while preserving explicit HTTP structure.
 **Do NOT use** this project for requests containing sensitive data
 (e.g. authentication tokens, credentials, financial data).
 
-This library is intended for internal services, prototypes, and non-critical integrations
-
 
 ## The Problem
 
@@ -41,7 +39,6 @@ ResponseEntity<?> call(@RequestParam("userId") Long userId,
                        @RequestBody Payload payload);
 ````
 
-
 Feign does not provide a way to pass one object and automatically split it into headers, parameters, and body.
 
 
@@ -57,17 +54,21 @@ ResponseEntity<?> call(@CompositeRequest RequestDto request);
 
 The library extracts request attributes based on field annotations and sends them appropriately.
 
+
 ## Requirements
 
 * Java 17+
 * Spring Boot 3 or 4
 * Spring Cloud OpenFeign
 
-You can use this [configuration for spring boot](https://start.spring.io/#!type=maven-project&language=java&dependencies=cloud-feign)
+You can use this [template configuration for spring boot](https://start.spring.io/#!type=maven-project&language=java&dependencies=cloud-feign)
+
+
 ## How to use
 
+### 1. Add GitHub Repository
 
-### 1. Add GitHub Repository to `pom.xml`
+For Maven, add repository to `pom.xml`
 ```xml
 <repositories>
     <repository>
@@ -77,7 +78,7 @@ You can use this [configuration for spring boot](https://start.spring.io/#!type=
 </repositories>
 ```
 
-For gradle, add GitHub repository to `build.gradle`
+For Gradle, add repository to `build.gradle`
 ```groovy
 repositories {
     maven {
@@ -87,13 +88,17 @@ repositories {
 ```
 
 
-### 2. Add Dependency to `pom.xml`
+### 2. Add Dependency
+
+For Maven, add dependency to `pom.xml`
 ```xml
-<dependency>
-   <groupId>io.openfeign.extensions</groupId>
-   <artifactId>composite-request</artifactId>
-   <version>0.1.0</version>
-</dependency>
+<dependencies>
+    <dependency>
+        <groupId>io.openfeign.extensions</groupId>
+        <artifactId>composite-request</artifactId>
+        <version>0.1.0</version>
+    </dependency>
+</dependencies>
 ```
 
 for Gradle, add dependency to `build.gradle`:
@@ -136,8 +141,7 @@ public class RequestDto {
 * The class can be any POJO.
 * No interface required.
 * No Spring annotations required.
-
-Only field-level annotations matter.
+* Only field-level annotations matter.
 
 ### 4. Use It in a Feign Client
 ```java
@@ -210,14 +214,14 @@ Example:
 
 ```java
 @Param
-private Integer size = 1;
+private Integer size = 10;
 
 @Param("user")
 private String userId = "123";
 ```
 Produces:
 ```
-?size=1&user=123
+?size=10&user=123
 ```
 ---
 #### Body
@@ -260,7 +264,7 @@ You cannot register a custom Feign Contract alongside it.
 
 If your project already customizes Feign contract behavior, this library will conflict.
 
-### 2. Incompatible with Custom InvocationHandlerFactory
+### 2. Incompatible with Custom Feign InvocationHandlerFactory
 
 This library provides its own InvocationHandlerFactory.
 
